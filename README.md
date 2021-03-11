@@ -18,7 +18,7 @@ Requirements:
 - NodeJS
 - NPM
 - Redis
-- Docker (optional)
+- Docker & Docker-compose (optional)
 
 Run using NPM:
 ```bash
@@ -32,13 +32,13 @@ npm install
 npm start
 ```
 
-Run using Docker:
+Run using docker-compose:
 ```bash
-# build image
-docker build -t pbgnz/url-shortener-microservice .
+# build and start the containers
+docker-compose up
 
-# run image
-docker run -p 49160:3000 -d pbgnz/url-shortener-microservice
+# stop the containers
+docker-compose down
 ```
 
 Usage

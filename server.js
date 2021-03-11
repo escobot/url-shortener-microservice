@@ -46,10 +46,12 @@ app.get('/new/:url', function (req, res) {
 app.get('/:url', function (req, res) {
     const short_url = req.params.url;
     client.get(short_url, function (error, result) {
-        if (error || result == null) {
-            res.send({error})
+        console.log(error);
+        console.log(result);
+        if (error != null || result == null) {
+            res.send({'error':'hashcode does not exist'})
         } else {
-            res.redirect(result);
+            res.status(301).redirect(result);
         }
     });
 })
