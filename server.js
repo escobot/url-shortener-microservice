@@ -5,7 +5,7 @@ const app = express();
 const redis = require('redis');
 
 // default ip and port: 127.0.0.1 & 6379
-const client = redis.createClient(); 
+const client = redis.createClient({host: 'redis'}); 
 
 client.on('connect', function() {
     console.log('Redis client connected');
