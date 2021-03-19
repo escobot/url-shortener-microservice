@@ -12,6 +12,9 @@ Build a full stack app that is functionally similar to this: https://little-url.
 
 * User Story: When I visit that shortened URL, it will redirect me to my original link.
 
+* Use Cases:  
+![Use Cases Img](https://user-images.githubusercontent.com/20388583/111838785-334a1400-88d0-11eb-9712-f200a14d0945.png)
+
 ## Notes
 
 Requirements:
