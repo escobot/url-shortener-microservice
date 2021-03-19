@@ -56,3 +56,8 @@ http://localhost:3000/new/https://www.google.ca
 http://localhost:3000/025550381
 
 ```
+
+Architecture
+
+![image](https://user-images.githubusercontent.com/20388583/111843043-d9008180-88d6-11eb-9df4-5c860415b269.png)
+
