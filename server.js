@@ -2,7 +2,25 @@
 
 const express = require('express');
 const app = express();
+const mongoose = require('mongoose');
 const redis = require('redis');
+
+// Middleware
+app.use(express.json());
+app.use(function(err, req, res, next) {
+    res.status(422).send({error: err.message});
+});
+
+// MongoDB
+const url = 'mongodb://root:rootpassword@mongo:27017/url_shortener?authSource=admin&compressors=zlib&retryWrites=true&w=majority';
+mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false, useCreateIndex: true }).then(() => {
+    console.log('MongoDB client connected');
+})
+.catch(err => {
+    console.error('App starting error:', err.stack);
+    process.exit(1)
+});;
+const urlModel = require('./url');
 
 // Redis
 // default ip and port: 127.0.0.1 & 6379
@@ -24,19 +42,22 @@ function hashCode(s) {
 }
 
 app.get('/new/:url', function (req, res) {
-    const original_url = req.params.url;
-    const short_url = hashCode(original_url);
-    const isUrl = new RegExp(/(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})/).test(original_url);
+    const longUrl = req.params.url.toString();
+    const shortUrl = hashCode(longUrl);
+    const isUrl = new RegExp(/(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})/).test(longUrl);
 
     if (isUrl) {
-        redisClient.get(short_url, function (error, result) {
-            if (result == null) {
-                redisClient.set(short_url, original_url, redis.print);
-            }
-            if (error) {
-                res.send({error}); 
-            }
-            res.send({"original_url": result, short_url});
+        const urlModelObject = new urlModel({longUrl: longUrl, shortUrl: shortUrl});
+        urlModelObject.save().then(function(dbResult){
+            redisClient.get(shortUrl, function (error, cacheResult) {
+                if (error) {
+                    res.send({error}); 
+                }
+                if (cacheResult == null) {
+                    redisClient.set(dbResult.shortUrl, dbResult.longUrl, redis.print);
+                }
+                res.send({longUrl: dbResult.longUrl, shortUrl: dbResult.shortUrl});
+            });
         });
     } else {
         res.send({'error': 'url is not valid'});
@@ -44,14 +65,22 @@ app.get('/new/:url', function (req, res) {
 })
 
 app.get('/:url', function (req, res) {
-    const short_url = req.params.url;
-    redisClient.get(short_url, function (error, result) {
-        console.log(error);
-        console.log(result);
-        if (error != null || result == null) {
-            res.send({'error':'hashcode does not exist'})
+    const shortUrl = req.params.url.toString();
+    redisClient.get(shortUrl, function (error, cacheResult) {
+        if (error) {
+            res.send({error}); 
+        }
+        if (cacheResult == null) {
+            urlModel.find({ shortUrl: shortUrl}).limit(1).then(function(dbResult, error) {
+                if (error) {
+                    res.send({error}); 
+                }
+                console.log(dbResult);
+                redisClient.set(dbResult[0].shortUrl.toString(), dbResult[0].longUrl.toString(), redis.print);
+                res.status(301).redirect('https://' + dbResult[0].longUrl.toString());
+            });
         } else {
-            res.status(301).redirect(result);
+            res.status(301).redirect('https://' + cacheResult);
         }
     });
 })
