@@ -25,6 +25,9 @@ Requirements:
 
 Run using NPM:
 ```bash
+# start mongodb
+systemctl start mongod
+
 # start redis server
 redis-server start
 
@@ -38,7 +41,7 @@ npm start
 Run using docker-compose:
 ```bash
 # build and start the containers
-docker-compose up
+docker-compose up --build
 
 # stop the containers
 docker-compose down
@@ -50,7 +53,7 @@ Usage
 http://localhost:3000/new/www.google.ca
 
 # expected response
-{"original_url": "https://www.google.ca", "short_url": "025550381"}
+{"longUrl": "https://www.google.ca", "shortUrl": "025550381"}
 
 # going to short url redirects to https://www.google.ca
 http://localhost:3000/025550381
