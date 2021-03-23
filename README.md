@@ -47,7 +47,7 @@ docker-compose down
 Usage
 ```bash
 # create short url for https://www.google.ca
-http://localhost:3000/new/https://www.google.ca
+http://localhost:3000/new/www.google.ca
 
 # expected response
 {"original_url": "https://www.google.ca", "short_url": "025550381"}

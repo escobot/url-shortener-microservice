@@ -4,22 +4,22 @@ const express = require('express');
 const app = express();
 const redis = require('redis');
 
+// Redis
 // default ip and port: 127.0.0.1 & 6379
-const client = redis.createClient({host: 'redis'}); 
+const redisClient = redis.createClient({host: 'redis'}); 
 
-client.on('connect', function() {
+redisClient.on('connect', function() {
     console.log('Redis client connected');
 });
 
-client.on('error', function (err) {
+redisClient.on('error', function (err) {
     console.log('Error::' + err);
 });
 
 function hashCode(s) {
-    let h = 0, l = s.length, i = 0;
-    if ( l > 0 )
-      while (i < l)
-        h = (h << 5) - h + s.charCodeAt(i++) | 0;
+    let h;
+    for(let i = 0; i < s.length; i++) 
+          h = Math.imul(31, h) + s.charCodeAt(i) | 0;
     return h.toString().substring(1);
 }
 
@@ -29,9 +29,9 @@ app.get('/new/:url', function (req, res) {
     const isUrl = new RegExp(/(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})/).test(original_url);
 
     if (isUrl) {
-        client.get(short_url, function (error, result) {
+        redisClient.get(short_url, function (error, result) {
             if (result == null) {
-                client.set(short_url, original_url, redis.print);
+                redisClient.set(short_url, original_url, redis.print);
             }
             if (error) {
                 res.send({error}); 
@@ -45,7 +45,7 @@ app.get('/new/:url', function (req, res) {
 
 app.get('/:url', function (req, res) {
     const short_url = req.params.url;
-    client.get(short_url, function (error, result) {
+    redisClient.get(short_url, function (error, result) {
         console.log(error);
         console.log(result);
         if (error != null || result == null) {
