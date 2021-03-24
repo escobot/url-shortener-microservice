@@ -20,6 +20,7 @@ Build a full stack app that is functionally similar to this: https://little-url.
 Requirements:
 - NodeJS
 - NPM
+- MongoDB
 - Redis
 - Docker & Docker-compose (optional)
 
