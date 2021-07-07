@@ -4,6 +4,8 @@ const express = require('express');
 const app = express();
 const redis = require('redis');
 
+const { hash } = require('./utils/hash');
+
 // Middleware
 app.use(express.json());
 app.use(function (err, req, res, next) {
@@ -23,16 +25,9 @@ redisClient.on('error', function (err) {
     console.log('Error::' + err);
 });
 
-function hashCode(s) {
-    let h;
-    for (let i = 0; i < s.length; i++)
-        h = Math.imul(31, h) + s.charCodeAt(i) | 0;
-    return h.toString().substring(1);
-}
-
 app.get('/new/:url', function (req, res) {
     const longUrl = req.params.url.toString();
-    const shortUrl = hashCode(longUrl);
+    const shortUrl = hash(longUrl, 'crc32');
     const isUrl = new RegExp(/(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})/).test(longUrl);
 
     if (isUrl) {
