@@ -2,7 +2,6 @@
 
 const express = require('express');
 const app = express();
-const mongoose = require('mongoose');
 const redis = require('redis');
 
 // Middleware
@@ -11,15 +10,6 @@ app.use(function (err, req, res, next) {
     res.status(422).send({ error: err.message });
 });
 
-// MongoDB
-const url = 'mongodb://root:rootpassword@mongo:27017/url_shortener?authSource=admin&compressors=zlib&retryWrites=true&w=majority';
-mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false, useCreateIndex: true }).then(() => {
-    console.log('MongoDB client connected');
-})
-    .catch(err => {
-        console.error('App starting error:', err.stack);
-        process.exit(1)
-    });;
 const urlModel = require('./url');
 
 // Redis
@@ -84,5 +74,4 @@ app.get('/:url', function (req, res) {
     });
 })
 
-app.listen(3000);
-console.log('Web server running on http://localhost:3000');
+module.exports = app;
