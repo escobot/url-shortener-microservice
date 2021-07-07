@@ -5,7 +5,8 @@
   "main": "start.js",
   "scripts": {
     "start": "node start.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest",
+    "test:watch": "jest --watch"
   },
   "repository": {
     "type": "git",
@@ -21,5 +22,11 @@
     "express": "^4.17.1",
     "mongoose": "^5.12.2",
     "redis": "^3.0.2"
+  },
+  "devDependencies": {
+    "jest": "^27.0.6",
+    "mongodb-memory-server": "^7.2.0",
+    "redis-memory-server": "^0.3.1",
+    "supertest": "^6.1.3"
   }
 }
