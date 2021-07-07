@@ -1,11 +1,11 @@
 const express = require('express');
 const app = express();
 
-const { generateShortUrl, getShortUrl } = require('./controllers/url.controller');
+const { generateShortUrl, getLongUrl } = require('./controllers/url.controller');
 
 app.use(express.json());
 
 app.get('/new/:url', generateShortUrl);
-app.get('/:url', getShortUrl);
+app.get('/:url', getLongUrl);
 
 module.exports = app;
