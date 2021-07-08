@@ -40,8 +40,12 @@ exports.getLongUrl = function (req, res) {
                 if (error) {
                     res.send({ error });
                 }
-                redisClient.set(dbResult[0].shortUrl.toString(), dbResult[0].longUrl.toString());
-                res.status(301).redirect('https://' + dbResult[0].longUrl.toString());
+                if (!dbResult.length) {
+                    res.status(404).send({'error': 'The requested resource was not found'});
+                } else {
+                    redisClient.set(dbResult[0].shortUrl.toString(), dbResult[0].longUrl.toString());
+                    res.status(301).redirect('https://' + dbResult[0].longUrl.toString());
+                }
             });
         } else {
             res.status(301).redirect('https://' + cacheResult);

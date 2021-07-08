@@ -57,7 +57,7 @@ http://localhost:3000/new/www.google.ca
 {"longUrl": "https://www.google.ca", "shortUrl": "025550381"}
 
 # going to short url redirects to https://www.google.ca
-http://localhost:3000/025550381
+http://localhost:3000/get/025550381
 
 ```
 

@@ -6,6 +6,6 @@ const { generateShortUrl, getLongUrl } = require('./controllers/url.controller')
 app.use(express.json());
 
 app.get('/new/:url', generateShortUrl);
-app.get('/:url', getLongUrl);
+app.get('/get/:url', getLongUrl);
 
 module.exports = app;
