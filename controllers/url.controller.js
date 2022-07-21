@@ -22,9 +22,12 @@ exports.generateShortUrl = function (req, res) {
                 }
                 res.send({ longUrl: dbResult.longUrl, shortUrl: dbResult.shortUrl });
             });
+        }).catch(function(error){
+            console.error(error);
+            res.status(500).send({ 'error': 'error creating url' });
         });
     } else {
-        res.send({ 'error': 'url is not valid' });
+        res.send(500).send({ 'error': 'url is not valid' });
     }
 };
 
