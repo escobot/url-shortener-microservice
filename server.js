@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 
-const { generateShortUrl, getLongUrl } = require('./controllers/url.controller');
+const { generateShortUrl, getLongUrl } = require('./services/url.service');
 
 app.use(express.json());
 

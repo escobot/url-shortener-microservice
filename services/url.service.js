@@ -1,7 +1,7 @@
-const URL = require('../models/url');
-const redisClient = require('../services/redis');
-const { hash } = require('../services/hash');
-const { validateUrl } = require('../services/validation');
+const Url = require('../models/url');
+const redisClient = require('../utils/redis');
+const { hash } = require('../utils/hash');
+const { validateUrl } = require('../utils/validation');
 
 exports.generateShortUrl = function (req, res) {
     const longUrl = req.params.url.toString();
@@ -10,7 +10,7 @@ exports.generateShortUrl = function (req, res) {
     if (isValidUrl) {
         const shortUrl = hash(longUrl, 'crc32');
 
-        const newUrl = new URL({ longUrl: longUrl, shortUrl: shortUrl });
+        const newUrl = new Url({ longUrl: longUrl, shortUrl: shortUrl });
 
         newUrl.save().then(function (dbResult) {
             redisClient.get(shortUrl, function (error, cacheResult) {
@@ -39,7 +39,7 @@ exports.getLongUrl = function (req, res) {
             res.send({ error });
         }
         if (cacheResult == null) {
-            URL.find({ shortUrl: shortUrl }).limit(1).then(function (dbResult, error) {
+            Url.find({ shortUrl: shortUrl }).limit(1).then(function (dbResult, error) {
                 if (error) {
                     res.send({ error });
                 }
