@@ -27,7 +27,7 @@ exports.generateShortUrl = function (req, res) {
             res.status(500).send({ 'error': 'error creating url' });
         });
     } else {
-        res.send(500).send({ 'error': 'url is not valid' });
+        res.status(500).send({ 'error': 'url is not valid' });
     }
 };
 
