@@ -19,8 +19,8 @@
   },
   "homepage": "https://github.com/escobot/url-shortener-microservice#readme",
   "dependencies": {
-    "express": "^4.17.1",
-    "mongoose": "^5.12.2",
+    "express": "^4.19.2",
+    "mongoose": "^5.13.20",
     "redis": "^3.0.2"
   },
   "devDependencies": {
