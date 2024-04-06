@@ -23,4 +23,9 @@ describe("validation service", () => {
         expect(validateUrl('https://www.')).toBeFalsy();
         expect(validateUrl('1')).toBeFalsy();
     });
+
+    it('should throw an error when URL is over 200 characters', () => {
+        const longUrl = 'http://' + 'a'.repeat(190) + '.com'; // URL longer than 200 characters
+        expect(() => validateUrl(longUrl)).toThrow('URL exceeds the maximum length of 200 characters');
+    });
 });
