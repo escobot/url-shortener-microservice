@@ -4,18 +4,17 @@ const redisClient = require('../utils/redis');
 const {validateUrl} = require('../utils/validation');
 const httpMocks = require('node-mocks-http'); // For mocking req, res objects
 
-// mocks
+// Mocks
 jest.mock('../models/url');
-jest.mock('redis', () => ({
-    createClient: jest.fn().mockReturnValue({
-        on: jest.fn((event, callback) => {
-            if (event === 'connect') {
-                console.log('Mock Redis client connected');
-            }
-        }),
-        get: jest.fn(),
-        set: jest.fn(),
+jest.mock('../utils/redis', () => ({
+    on: jest.fn((event, callback) => {
+        if (event === 'connect') {
+            console.log('Mock Redis client connected');
+        }
     }),
+    get: jest.fn().mockResolvedValue(null), // Adjusted for promise-based mock
+    set: jest.fn().mockResolvedValue('OK'), // Adjusted for promise-based mock
+    connect: jest.fn().mockResolvedValue(), // Ensure the mock includes connect
 }));
 jest.mock('../utils/validation', () => ({
     validateUrl: jest.fn().mockReturnValue(true),
@@ -49,10 +48,6 @@ describe('URL Shortening Service', () => {
                 save: mockSave
             }));
 
-            // Mock redisClient get and set
-            redisClient.get.mockImplementation((key, callback) => callback(null, null));
-            redisClient.set.mockImplementation(() => {});
-
             await generateShortUrl(req, res);
 
             // Assertions
@@ -76,12 +71,12 @@ describe('URL Shortening Service', () => {
             const res = httpMocks.createResponse();
 
             // Mock redisClient get to return a long URL
-            redisClient.get.mockImplementation((key, callback) => callback(null, 'http://example.com'));
+            redisClient.get.mockResolvedValue('http://example.com');
 
             await getLongUrl(req, res);
 
             // Assertions
-            expect(redisClient.get).toHaveBeenCalledWith('hashedUrl', expect.any(Function));
+            expect(redisClient.get).toHaveBeenCalledWith('hashedUrl');
             expect(res._getRedirectUrl()).toEqual('https://http://example.com');
         });
     });
