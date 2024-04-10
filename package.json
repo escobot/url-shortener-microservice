@@ -21,12 +21,16 @@
   "dependencies": {
     "express": "^4.19.2",
     "express-rate-limit": "^7.2.0",
-    "mongoose": "^5.12.2",
+    "mongoose": "^5.13.20",
     "redis": "^4.6.13"
   },
   "devDependencies": {
     "jest": "^27.0.6",
     "node-mocks-http": "^1.14.1",
     "supertest": "^6.3.4"
+  },
+  "resolutions": {
+    "@babel/traverse": "7.23.2",
+    "tough-cookie": "4.1.3"
   }
 }
