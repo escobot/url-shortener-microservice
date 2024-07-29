@@ -20,7 +20,7 @@
   "homepage": "https://github.com/escobot/url-shortener-microservice#readme",
   "dependencies": {
     "express": "^4.19.2",
-    "express-rate-limit": "^7.3.1",
+    "express-rate-limit": "^7.4.0",
     "mongoose": "^5.13.20",
     "redis": "^4.6.15"
   },
