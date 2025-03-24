@@ -27,7 +27,7 @@
   "devDependencies": {
     "jest": "^27.0.6",
     "node-mocks-http": "^1.16.2",
-    "supertest": "^7.0.0"
+    "supertest": "^7.1.0"
   },
   "resolutions": {
     "@babel/traverse": "7.23.2",
